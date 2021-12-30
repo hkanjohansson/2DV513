@@ -57,7 +57,8 @@ WHERE author = 'gigaquack'
 JOIN distinct_link ON reddit_data.link_id = distinct_link;
 
 # 8
-SELECT author, subreddit
-FROM reddit_data;
+SELECT DISTINCT(author), subreddit
+FROM reddit_data
+GROUP BY author;
 
 #DROP TABLE reddit_data;
