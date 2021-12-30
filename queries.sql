@@ -56,4 +56,8 @@ WHERE author = 'gigaquack'
 ) AS interacted_with
 JOIN distinct_link ON reddit_data.link_id = distinct_link;
 
+# 8
+SELECT author, subreddit
+FROM reddit_data;
+
 #DROP TABLE reddit_data;
