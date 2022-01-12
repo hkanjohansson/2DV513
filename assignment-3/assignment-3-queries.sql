@@ -45,23 +45,19 @@ SHOW TABLES;
 SELECT *
 FROM games;	
 
-SELECT COUNT(*)
-FROM games AS temp;
-
 SELECT *
 FROM reviewer;
 
 SELECT *
-FROM reviews
-WHERE reviewer='hj222je@student.lnu.se';
+FROM reviews;
 
-# Which title has the most reviews?
+# Which titles has the largest amount of reviews?
 SELECT title, COUNT(title) as most_reviewed
 FROM reviews
 GROUP BY title
 ORDER BY most_reviewed DESC;
 
-# Which country has made the most reviews?
+# Which countries has made the most reviews?
 DROP VIEW reviews_by_country;
 CREATE VIEW reviews_by_country AS
 SELECT COUNT(COUNTRY) AS n_reviews, country
@@ -76,29 +72,34 @@ FROM reviews_by_country;
 # Which games and by what company is those games made by has a specific user reviewed?
 DROP VIEW company_reviewed;
 CREATE VIEW company_reviewed AS
-SELECT games.title, games.company, reviews.date, reviews.reviewer, reviews.review
+SELECT games.title, games.company, reviews.reviewer
 FROM reviews
 JOIN games ON games.title = reviews.title;
 
-SELECT reviewer, title, company, review
+SELECT *
+FROM company_reviewed;
+
+SELECT title, company
 FROM company_reviewed
 WHERE reviewer = 'game55@email.com'
 GROUP BY title;
 
-# What genre is the most popular (n_reviews) in each country represented in the database?
+# What genres are the most popular (n_reviews)?
 DROP VIEW genres;
 CREATE VIEW genres AS
-SELECT games.title, games.genre
+SELECT games.title, games.genre, games.company, reviews.reviewer
 FROM games
 JOIN reviews ON reviews.title = games.title;
 
-SELECT *
-FROM genres;
-
-SELECT COUNT(genre) AS n_genres, genre
+SELECT genre, COUNT(genre) AS n_genres
 FROM genres
 GROUP BY genre
 ORDER BY n_genres DESC;
+
+SELECT title, company
+FROM genres
+WHERE reviewer = 'game55@email.com'
+GROUP BY title;
 
 # Which company has the most reviews?
 DROP VIEW company_most_reviews;
@@ -111,19 +112,8 @@ ORDER BY n_reviews DESC;
 SELECT company, MAX(n_reviews) AS most_reviewed
 FROM company_most_reviews;
 
-
-
-/*
-Write queries to show if there are any users that has not written any reviews. 
-(Change table name of Reviewer to User?)
-*/
-
-SELECT reviewer, COUNT(reviewer) AS n_reviews
-FROM reviews
-GROUP BY reviewer
-ORDER BY n_reviews DESC;
-
-SELECT email, country 
+# Which reviewers has not yet made a single review?
+SELECT email AS no_reviews
 FROM reviewer
 WHERE email 
 NOT IN (

@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from mysql.connector import errorcode
 import pandas as pd
 
-
 cnx = mysql.connector.connect(user='root',
                               password='root',
                               )
@@ -23,44 +22,82 @@ except mysql.connector.Error as err:
     else:
         print(err)
 
-#cursor.execute("DROP VIEW reviews_by_country")
-#cursor.execute("DROP VIEW company_reviewed;")
+most_reviews = "SELECT title, COUNT(title) as most_reviewed \
+FROM reviews \
+GROUP BY title \
+ORDER BY most_reviewed DESC; \
+"
 
-most_reviews = "SELECT title, COUNT(title) as most_reviewed FROM reviews GROUP BY title ORDER BY most_reviewed DESC;"
+most_reviews_country_view = "CREATE VIEW reviews_by_country AS \
+SELECT COUNT(COUNTRY) AS n_reviews, country FROM reviewer \
+JOIN reviews ON reviews.reviewer = reviewer.email \
+GROUP BY country \
+ORDER BY n_reviews DESC; \
+"
 
-most_reviews_country_view = "CREATE VIEW reviews_by_country AS SELECT COUNT(COUNTRY) AS n_reviews, country FROM reviewer JOIN reviews ON reviews.reviewer = reviewer.email GROUP BY country ORDER BY n_reviews DESC;"
-most_reviews_country = "SELECT * FROM reviews_by_country;"
+most_reviews_country = "SELECT * \
+FROM reviews_by_country; \
+"
 
-company_reviewed_view = "CREATE VIEW company_reviewed AS SELECT games.title, games.company, reviews.date, reviews.reviewer, reviews.review FROM reviews JOIN games ON games.title = reviews.title;"
-company_reviewed = "SELECT reviewer, title, company, review FROM company_reviewed WHERE reviewer = 'game55@email.com' GROUP BY title;"
+company_reviewed_view = "DROP VIEW company_reviewed; \
+CREATE VIEW company_reviewed AS \
+SELECT games.title, games.company, reviews.reviewer \
+FROM reviews \
+JOIN games ON games.title = reviews.title;\
+"
+company_reviewed = " SELECT title, company \
+FROM company_reviewed \
+WHERE reviewer = 'game55@email.com' \
+GROUP BY title; \
+"
 
-popular_genres_view = "CREATE VIEW genres AS SELECT games.title, games.genre FROM games JOIN reviews ON reviews.title = games.title;"
-popular_genres = "SELECT COUNT(genre) AS n_genres, genre FROM genres GROUP BY genre ORDER BY n_genres DESC;"
+popular_genres_view = "CREATE VIEW genres AS \
+SELECT games.title, games.genre \
+FROM games JOIN reviews \
+ON reviews.title = games.title;"
 
-company_most_reviewed_view = "CREATE VIEW company_most_reviews AS SELECT company, COUNT(company) AS n_reviews FROM company_reviewed GROUP BY company ORDER BY n_reviews DESC;"
-company_most_reviewed = "SELECT company, MAX(n_reviews) AS most_reviewed FROM company_most_reviews;"
+popular_genres = "SELECT genre, COUNT(genre) AS n_genres \
+FROM genres \
+GROUP BY genre \
+ORDER BY n_genres DESC;"
 
-queries = ['Most reviewed game', 'Most reviews by country', 'Which games including title, company, review date and review for a specific user', 'Genres popularity', 'The most popular company']
-query_statements = [most_reviews, most_reviews_country, company_reviewed, popular_genres, company_most_reviewed]
+company_most_reviewed_view = "CREATE VIEW company_most_reviews AS \
+SELECT company, COUNT(company) AS n_reviews \
+FROM company_reviewed \
+GROUP BY company \
+ORDER BY n_reviews DESC;"
+
+company_most_reviewed = "SELECT company, MAX(n_reviews) AS most_reviewed \
+FROM company_most_reviews;"
+
+no_reviews = "SELECT email \
+FROM reviewer \
+WHERE email \
+NOT IN ( \
+	SELECT reviewer \
+    FROM reviews \
+);"
+
+
+queries = ['Most reviewed game', 'Most reviews by country', 'Which games including title and company has been reviewed by a specific user', 'Genres popularity', 'The most popular company', 'Reviewers that has not written a review yet']
+query_statements = [most_reviews, most_reviews_country, company_reviewed, popular_genres, company_most_reviewed, no_reviews]
 
 print('Choose 1 for retrieving data or 2 for inserting data: ')
-
 init_choice = input()
 
 while init_choice != '1' and init_choice != '2':
     print("Please enter a valid choice")
     init_choice = input()
 
-
 if init_choice == '1':
-    print(f"\nChoose a number between 1 and 5 for the following data:")
+    print(f"\nChoose a number between 1 and {len(queries)} for the following data:")
     for i in range(len(queries)):
         print(f'{i + 1}: {queries[i]}')
     query_choice = input()
-    choices = ['1', '2', '3', '4', '5']
+    choices = ['1', '2', '3', '4', '5', '6']
 
     while query_choice not in choices:
-        print(f'\nPlease enter a number betweeen 1 and 5 for the following data:')
+        print(f'\nPlease enter a number betweeen 1 and {len(queries)} for the following data:')
         for i in range(len(queries)):
             print(f'{i + 1}: {queries[i]}')
         query_choice = input()
@@ -92,7 +129,3 @@ elif init_choice == '2':
     else:
         print('See you later')
         exit()
-
-
-
-        

@@ -6,7 +6,6 @@ import os
 import numpy as np
 
 np.random.seed(1)
-
 cnx = mysql.connector.connect(user='root',
                               password='root',
                               )
@@ -51,7 +50,6 @@ def create_database(cursor, DB_NAME):
     except mysql.connector.Error as err:
         print("Failed creating database: {}".format(err))
         exit(1)
-
 
 #create_database(cursor, DB_NAME)
 games.to_sql('games', con=engine, if_exists='replace')
