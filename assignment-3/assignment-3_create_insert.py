@@ -17,7 +17,6 @@ engine = create_engine('mysql://root:root@localhost:3306/game_reviews')
 games_columns = ['title', 'genre', 'company']
 reviewers_columns = ['email', 'country']
 reviews_columns = ['title', 'date', 'reviewer', 'review']
-#likes_columns = ['up', 'down']
 
 games = np.array([['Super Mario Bros.', 'Platform', 'Nintendo'], ['Metal Gear Solid', 'Action', 'Konami'], ['Pokémon', 'RPG', 'Game Freak Inc.'], 
                 ['The Witcher 3', 'RPG', 'CD Project Red'], ['Halo Combat Evolved', 'FPS', 'Bungie'], ['Resident Evil 4', 'Horror', 'Capcom'],
