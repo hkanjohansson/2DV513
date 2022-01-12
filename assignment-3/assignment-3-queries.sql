@@ -13,33 +13,6 @@ ALTER TABLE reviews
 DROP COLUMN `index`;
 */
 
-/*
-CREATE TABLE Games (
-	
-	title VARCHAR(255) NOT NULL,
-    genre VARCHAR(255),
-    company VARCHAR(255)
-    
-);
-
-CREATE TABLE Reviewer (
-	id INT NOT NULL AUTO_INCREMENT,
-	email VARCHAR(255) NOT NULL,
-    country VARCHAR(255),
-    PRIMARY KEY (id)
-);
-
-
-CREATE TABLE Reviews (
-	id INT NOT NULL AUTO_INCREMENT,
-	title VARCHAR(255),
-    date VARCHAR(255),
-    email VARCHAR(255),
-    review TEXT,
-    reviewer TEXT,
-    PRIMARY KEY (id)
-);
-*/
 SHOW TABLES;
 
 SELECT *
